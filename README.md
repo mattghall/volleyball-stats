@@ -9,19 +9,34 @@ Live Preview at http://mattghall.com/volleyball/stats.html
 
 #Syntax
 ##Practice Syntax##
-Server's-initials + Passer's-initials + pass-rating(0-3) + attempter's-initials + last-touches-initials + action ('k' for kill, 'er' for unforced error, 'eb' for blocked error) + [ENTER/RETURN]
+Server's-initials + Passer's-initials + pass-rating(0-3) + attempter's-initials + last-touches-initials + action ('k' for kill, 'er' for unforced error, 'eb' for blocked error) + [ENTER/RETURN].
+
 example: Sue Player serves to Jane Dig. Jane's pass has a 2 rating. Sarah Ball attempt. Jane Net attempt. Rebecca Court kill.
-Type: > SP JD 2 SB JN RC k [ENTER/RETURN]
-For a free ball, type "fb" followed by attempts and the eventual kill/error
+
+Type:
+> SP JD 2 SB JN RC k [ENTER/RETURN]
+
+For a free ball, type "fb" followed by attempts and the eventual kill/error.
+
 example: Coach throws free ball on court, Jane Dig attempt. Sarah Ball's kill was blocked for an error via block.
-Type: > fb JD SB eb [ENTER/RETURN]
+
+Type:
+> fb JD SB eb [ENTER/RETURN]
 
 ##Match Syntax##
-Type "match" + [ENTER/RETURN] to switch to match mode (type "practice" to switch back)
+Type "match" + [ENTER/RETURN] to switch to match mode (type "practice" to switch back).
+
 If starting on defense:
-"p" for passing + passer's-initials + pass-rating(0-3) + attempts/kills/errors as before
+
+"p" for passing + passer's-initials + pass-rating(0-3) + attempts/kills/errors as before.
+
 example: Jane receives serve and passes (3) to Sarah who gets a kill
-Type: > p JD 3 SB k [ENTER/RETURN]
+Type:
+> p JD 3 SB k [ENTER/RETURN]
+
 "s" for serving + server's initials + serve rating + attempts/kills/errors as before
+
 example: Jane serves an ace
-Type: > s JD 4
+
+Type:
+> s JD 4
