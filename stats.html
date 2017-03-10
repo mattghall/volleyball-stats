@@ -1,0 +1,360 @@
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="tte/src/jquery.table2excel.js"></script>
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script type='text/javascript' src='knockout.js'></script>
+<script src="statme.js"></script>
+
+<style>
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    margin:5px;
+    margin-left: 10px;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding-bottom:1px;
+    padding-left:6px;
+    padding-right:6px;
+    padding-top:1px;
+}
+
+th{
+  background-color: #003166;
+  color:#FFFFFF;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+
+.btn{
+padding-bottom:1px;
+padding-left:6px;
+padding-right:6px;
+padding-top:1px;
+}
+
+.fakeButton{
+  background-color: transparent;
+  color: #111111;
+  border: 0px;
+  margin: 0;
+}
+.fakeButton:hover{
+  background-color: transparent;
+  color: #111111;
+  border: 0px;
+  margin: 0;
+}
+
+.actionBox{
+  display:inline-block;
+  padding: 5px;
+  background-color: #1c8b85;
+  margin: 1px;
+  border-radius: 5px;
+}
+
+.serve{
+  background-color: #AA6c39;
+  border-color: #AA6c39;
+}
+
+.kill{
+  background-color: #2D882D;
+  border-color: #2D882D;
+}
+
+.pass{
+  background-color: #9775AA;
+  border-color: #9775AA;
+}
+
+.error{
+  background-color: #AA3939;
+  border-color: #AA3939;
+  color: #eeeeee;
+}
+
+.errorBlock{
+  background-color: #550000;
+  border-color: #550000;
+  color: #eeeeee;
+}
+
+#titleDiv{
+  width:50%
+  margin: 0 auto;
+  text-align: center;
+}
+
+#actions{
+  height:50px;
+  width:100%;
+  background-color: #05203e;
+  display:block;
+  padding:5px;
+}
+#history{
+  height:50px;
+  width:100%;
+  background-color: #484F80;
+  display:block;
+  padding:5px;
+  overflow:hidden
+}
+#inputs{
+  height:50px;
+  width:100%;
+  background-color: #05203e;
+  display:block;
+  padding: 5px;
+}
+
+.teamStats{
+	padding-left: 25px;
+}
+.teamStats td{
+	padding: 15px;
+}
+.teamStats tr:nth-child(even) {
+    background-color: #C0D9AF;
+}
+
+
+</style>
+<body>
+
+<div id="actions"></div>
+<div id="inputs"><input id="input" class="form-control" style="margin:auto; width:50%;" placeholder="[server passer pass-rating] or ['fb'] + player* + [player 'k' | player 'er']"></div>
+<div id="history"></div>
+<div class="chart">
+  <table id="hittingTable" style="float: left;">
+      <thead>
+        <tr>
+          <td colspan="11">
+            <div id="titleDiv"><h1>Hitting</h1></div>
+          </td>
+        </tr>
+        <tr>
+          <th>#</th>
+          <th>init</th>
+          <th>name</th>
+          <th>kills</th>
+          <th>errors</th>
+          <th>blocked</th>
+          <th>attempts</th>
+          <th width="10px">tot att..</th>
+          <th width="70px">hit %</th>
+          <th width="70px">error %</th>
+          <th width="70px">unforced error %</th>
+      </tr>
+	  </thead>
+      <tbody data-bind="foreach: players">
+          <tr>
+              <td data-bind="text: number"></td>
+              <td data-bind="text: initials"></td>
+              <td data-bind="text: fullName"></td>
+              <td>
+                <div class="btn-group-vertical noExl">
+                  <button type="button" class="btn btn-primary noExl" data-bind="click: $parent.addKill">+</button>
+                  <button type="button" class="btn btn-primary noExl" data-bind="click: $parent.unKill">-</button>
+                </div>
+                &nbsp;&nbsp;<span data-bind="text: kills"/>
+              </td>
+              <td>
+                <div class="btn-group-vertical noExl">
+                  <button type="button" class="btn btn-primary noExl" data-bind="click: $parent.addError">+</button>
+                  <button type="button" class="btn btn-primary noExl" data-bind="click: $parent.unError">-</button>
+                </div>
+                &nbsp;&nbsp;<span data-bind="text: errors"/>
+              </td>
+              <td>
+                <div class="btn-group-vertical noExl">
+                  <button type="button" class="btn btn-primary noExl" data-bind="click: $parent.addErrorBlock">+</button>
+                  <button type="button" class="btn btn-primary noExl" data-bind="click: $parent.unErrorBlock">-</button>
+                </div>
+                &nbsp;&nbsp;<span data-bind="text: errorBlocks"/>
+              </td>
+              <td>
+                <div class="btn-group-vertical noExl">
+                  <button type="button" class="btn btn-primary noExl" data-bind="click: $parent.addAttempt">+</button>
+                  <button type="button" class="btn btn-primary noExl" data-bind="click: $parent.unAttempt">-</button>
+                </div>
+                &nbsp;&nbsp;<span data-bind="text: attempts"/>
+              </td>
+              <td data-bind="text: totalAttempts"></td>
+              <td data-bind="text: percentage"></td>
+              <td data-bind="text: errPercent"></td>
+              <td data-bind="text: unfErrPercent"></td>
+          </tr>
+      </tbody>
+  </table>
+
+
+  </table>
+  <table class="teamStats">
+  	<thead>
+  		<tr>
+  		  <td colspan="4">
+  			<div id="titleDiv"><h1>Team Stats</h1></div>
+  		  </td>
+  		</tr>
+  	</thead>
+  	<tbody data-bind="with: teamStats">
+  		<tr>
+  			<td>kills</td>
+  			<td id="killsDisp" data-bind="text: kills"></td>
+        <td>hit %</td>
+        <td id="percentageDisp" data-bind="text: percentage"></td>
+  		</tr>
+  		<tr>
+  			<td>errors</td>
+  			<td id="errorsDisp" data-bind="text: errors"></td>
+        <td>error %</td>
+  			<td id="errPercentDisp" data-bind="text: errPercent"></td>
+  		</tr>
+  		<tr>
+  			<td>blocked</td>
+  			<td id="errorBlocksDisp" data-bind="text: errorBlocks"></td>
+        <td>Average Serve</td>
+  			<td id="avgServeDisp" data-bind="text: avgServe"></td>
+  		</tr>
+  		<tr>
+  			<td>attempts</td>
+  			<td id="attemptsDisp" data-bind="text: attempts"></td>
+        <td>Average Pass</td>
+  			<td id="avgPassDisp" data-bind="text: avgPass"></td>
+  		</tr>
+  		<tr>
+  			<td>tot. att</td>
+  			<td id="totalAttemptsDisp" data-bind="text: totalAttempts"></td>
+        <td>Perfect Passes</td>
+  			<td id="perfectPassDisp" data-bind="text: p3"></td>
+  		</tr>
+  		<tr>
+        <td>Aces</td>
+        <td id="acesDisp" data-bind="text: s4"></td>
+        <td>Poor Passes</td>
+  			<td id="poorPassDisp" data-bind="text: p0"></td>
+  		</tr>
+  		<tr>
+        <td>Service Errors</td>
+        <td id="serveErrDisp" data-bind="text: s0"></td>
+        <td>Points For</td>
+  			<td id="pointsForDisp" data-bind="text: avgServe"></td>
+  		</tr>
+  		<tr>
+  			<td>unforced error %</td>
+  			<td id="unfErrPercentDisp" data-bind="text: unfErrPercent"></td>
+        <td>Points Against</td>
+  			<td id="pointsAgainstDisp" data-bind="text: avgServe"></td>
+  		</tr>
+  	</tbody>
+  </table>
+</div>
+
+<div class="chart" style="float: left;">
+  <table  id="servingTable">
+    <thead>
+    <tr>
+      <td colspan="12">
+        <div id="titleDiv"><h1>Serving</h1></div>
+      </td>
+    </tr>
+      <tr class-"rowTitles">
+          <th>#</th>
+          <th>init</th>
+          <th>name</th>
+          <th colspan="2">pass</th>
+          <th>avg pass</th>
+          <th colspan="2">serve</th>
+          <th>avg serve</th>
+          <th>passes</th>
+          <th>serves</th>
+      </tr></thead>
+      <tbody data-bind="foreach: players">
+          <tr>
+              <td data-bind="text: number"></td>
+              <td data-bind="text: initials"></td>
+              <td data-bind="text: fullName"></td>
+              <td width="65px" class="noExl">
+                <div class="btn-group-vertical noExl">
+                  <button type="button" class="btn btn-primary" data-bind="click: $parent.pass3">3</button>
+                  <button type="button" class="btn btn-primary" data-bind="click: $parent.pass1">1</button>
+                </div>
+                <div class="btn-group-vertical noExl">
+                  <button type="button" class="btn btn-primary" data-bind="click: $parent.pass2">2</button>
+                  <button type="button" class="btn btn-primary" data-bind="click: $parent.pass0">0</button>
+                </div>
+              </td>
+              <td width="75px">
+                <div class="btn-group-vertical">
+                  <button type="button" class="btn btn-primary fakeButton" data-bind="text: p3">0</button>
+                  <button type="button" class="btn btn-primary fakeButton" data-bind="text: p1">0</button>
+                </div>
+                <div class="btn-group-vertical">
+                  <button type="button" class="btn btn-primary fakeButton" data-bind="text: p2">0</button>
+                  <button type="button" class="btn btn-primary fakeButton" data-bind="text: p0">0</button>
+                </div>
+              </td>
+              <td data-bind="text: avgPass"></td>
+              <td width="90px" class="noExl">
+                <button type="button" class="btn btn-primary serve noExl" style="height:47px;" data-bind="click: $parent.serve4">A</button>
+                <div class="btn-group-vertical noExl">
+                  <button type="button" class="btn btn-primary serve noExl" data-bind="click: $parent.serve3">3</button>
+                  <button type="button" class="btn btn-primary serve noExl" data-bind="click: $parent.serve1">1</button>
+                </div>
+                <div class="btn-group-vertical noExl">
+                  <button type="button" class="btn btn-primary serve noExl" data-bind="click: $parent.serve2">2</button>
+                  <button type="button" class="btn btn-primary serve noExl" data-bind="click: $parent.serve0">0</button>
+                </div>
+              </td>
+              <td width="110px" .noExl>
+                <button type="button" class="btn btn-primary fakebutton" style="height:47px;" data-bind="text: s4">A</button>
+                <div class="btn-group-vertical">
+                  <button type="button" class="btn btn-primary fakeButton" data-bind="text: s3">0</button>
+                  <button type="button" class="btn btn-primary fakeButton" data-bind="text: s1">0</button>
+                </div>
+                <div class="btn-group-vertical">
+                  <button type="button" class="btn btn-primary fakeButton" data-bind="text: s2">0</button>
+                  <button type="button" class="btn btn-primary fakeButton" data-bind="text: s0">0</button>
+                </div>
+              </td>
+              <td data-bind="text: avgServe"></td>
+              <td data-bind="text: totalPass"></td>
+              <td data-bind="text: totalServe"></td>
+          </tr>
+      </tbody>
+  </table>
+</td>
+<div class="chart" style="padding-left:15px;">
+  <h2>Practice Syntax</h2>
+<p>
+Server's-initials + Passer's-initals + pass-rating(0-3) + attempter's-initials + last-touches-initials + action ('k' for kill, 'er' for unforced error, 'eb' for blocked error) + [ENTER/RETURN]<br/>
+example: Sue Player serves to Jane Dig. Jane's pass has a 2 rating. Sarah Ball attempt. Jane Net attempt. Rebecca Court kill.<br />
+Type: SP JD 2 SB JN RC k [ENTER/RETURN]<br />
+For a free ball, type "fb" followed by attempts and the eventual kill/error<br />
+example: Coach throws free ball on court, Jane Dig attempt. Sarah Ball's kill was blocked for an error via block.<br />
+Type: fb JD SB eb [ENTER/RETURN]
+</p>
+<h2>Match Syntax</h2>
+<p>
+Type "match" + [ENTER/RETURN] to switch to match mode (type "practice" to switch back)<br />
+If starting on defense:<br/>
+"p" for passing + passer's-initials + pass-rating(0-3) + attempts/kills/errors as before<br />
+example: Jane receives serve and passes (3) to Sarah who gets a kill<br />
+Type: p JD 3 SB k [ENTER/RETURN] <br />
+"s" for serving + server's initials + serve rating + attempts/kills/errors as before<br />
+example: Jane serves an ace<br />
+Type: s JD 4<br />
+</p>
+</div>
+<button id="exportHittingButton" class="btn btn-primary">Save Hitting</button>
+<button id="exportServingButton" class="btn btn-primary">Save Serve/Pass</button>
+</body>
+</html>
